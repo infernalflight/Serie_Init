@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Serie List{% endblock %}
+
+{% block body %}
+    <h2>Liste des séries</h2>
+    {% for serie in series %}
+        <img src="{{ asset('uploads/posters/'~serie.poster) }}" width="150px" alt="{{ serie.name }}" title="{{ serie.name }}"/>
+    {% endfor %}
+{% endblock %}
