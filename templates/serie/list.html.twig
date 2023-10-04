@@ -4,7 +4,18 @@
 
 {% block body %}
     <h2>Liste des séries</h2>
+    <section>
+        <div class="flex_between">
+            {% if page > 1 %}
+                <a href="{{ path('serie_list', {'page': page - 1}) }}">Previous page</a>
+            {% endif %}
+            &nbsp;{{ page }} / {{ pages_total }}&nbsp;
+            {% if page < pages_total %}
+                <a href="{{ path('serie_list', {'page' : page + 1}) }}">Next page</a>
+            {% endif%}
+        </div>
+    </section>
     {% for serie in series %}
-        <img src="{{ asset('uploads/posters/'~serie.poster) }}" width="150px" alt="{{ serie.name }}" title="{{ serie.name }}"/>
+        <a href="{{ path('serie_details', {'id' : serie.id }) }}"><img src="{{ asset('uploads/posters/series/'~serie.poster) }}" width="150px" alt="{{ serie.name }}" title="{{ serie.name }}"/></a>
     {% endfor %}
 {% endblock %}

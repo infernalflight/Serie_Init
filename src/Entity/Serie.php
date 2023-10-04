@@ -47,6 +47,12 @@ class Serie
     #[ORM\Column(nullable: true)]
     private ?int $tmdbId = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateCreated = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateModified = null;
+
 
     public function getId(): ?int
     {
@@ -227,5 +233,29 @@ class Serie
     public function setTmdbId(?int $tmdbId): void
     {
         $this->tmdbId = $tmdbId;
+    }
+
+    public function getDateCreated(): ?\DateTimeInterface
+    {
+        return $this->dateCreated;
+    }
+
+    public function setDateCreated(\DateTimeInterface $dateCreated): static
+    {
+        $this->dateCreated = $dateCreated;
+
+        return $this;
+    }
+
+    public function getDateModified(): ?\DateTimeInterface
+    {
+        return $this->dateModified;
+    }
+
+    public function setDateModified(?\DateTimeInterface $dateModified): static
+    {
+        $this->dateModified = $dateModified;
+
+        return $this;
     }
 }
