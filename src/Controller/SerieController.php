@@ -22,6 +22,10 @@ class SerieController extends AbstractController
             ($page - 1) * $limit
         );
 
+        $list = $serieRepository->findBestSeries(300, 8);
+
+        $list = $serieRepository->getSeriesByDql(300);
+
         $count = $serieRepository->count(['status' => 'ended']);
 
         $nbPage = ceil($count / $limit);
