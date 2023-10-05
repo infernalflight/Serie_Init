@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edition{% endblock %}
+
+{% block body %}
+    <h2>Edition d'une Série</h2>
+    {{ form_start(serie_form) }}
+
+    <div class="class">
+        {{ form_row(serie_form.name) }}
+    </div>
+    <div>
+        {{ form_row(serie_form.overview) }}
+    </div>
+    {{ form_end(serie_form) }}
+{% endblock %}

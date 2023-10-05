@@ -5,8 +5,11 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
+#[UniqueEntity('name', 'Ce nom existe déja')]
 class Serie
 {
     #[ORM\Id]
@@ -14,7 +17,9 @@ class Serie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank([], 'Ce champs ne peut pas etre vide')]
+    #[Assert\Assert\Length(min: 3, message: 'Le nom doit avoir auy moins {{ limit }} caractères')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -27,15 +32,18 @@ class Serie
     private ?string $popularity = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 1, nullable: true)]
+    #[Assert\Range(min: 0, max:10, notInRangeMessage: 'Ca doit etre entre {{ min }} et {{ max }}')]
     private ?string $vote = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $genres = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\LessThan(propertyPath: 'lastAirDate', message: 'Postérieur à la fin ?')]
     private ?\DateTimeInterface $firstAirDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'firstAirDate', message: 'Antérieur à la fin, sérieux ???')]
     private ?\DateTimeInterface $lastAirDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]

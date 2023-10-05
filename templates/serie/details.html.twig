@@ -8,5 +8,6 @@
     <p>Status: {{ serie.status }}</p>
     <p>Description: {{ serie.overview }}</p>
     <p>Date de lancement: {{ serie.firstAirDate|date('d/m/Y') }}</p>
+    <p><a href="{{ path('serie_edit', {'id' : serie.id}) }}">Modifier</a></p>
     <p><img src="{{ asset('uploads/posters/series/' ~ serie.poster) }}" /></p>
 {% endblock %}

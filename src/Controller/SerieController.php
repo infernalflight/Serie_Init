@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Serie;
+use App\Form\SerieType;
 use App\Repository\SerieRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -57,6 +61,55 @@ class SerieController extends AbstractController
 
         return $this->render('serie/details.html.twig', [
             'serie' => $serie
+        ]);
+    }
+
+    #[Route('/new', name: '_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $serie = new Serie();
+        $serieForm = $this->createForm(SerieType::class, $serie);
+        $serieForm->handleRequest($request);
+
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            $serie->setDateCreated(new \DateTime());
+
+            $entityManager->persist($serie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Nouvelle série enregistrée.');
+            return $this->redirectToRoute('serie_list');
+        }
+
+
+        return $this->render('serie/edit.html.twig', [
+            'serie_form' => $serieForm,
+        ]);
+    }
+
+    #[Route('/edit/{id}', name: '_edit', requirements: ['id' => '\d+'])]
+    public function edit(int $id, SerieRepository $serieRepository, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $serie = $serieRepository->find($id);
+
+        $serieForm = $this->createForm(SerieType::class, $serie);
+        $serieForm->handleRequest($request);
+
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            $serie->setDateCreated(new \DateTime());
+
+            $entityManager->persist($serie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Série modifiée.');
+            return $this->redirectToRoute('serie_list');
+        }
+
+
+        return $this->render('serie/edit.html.twig', [
+            'serie_form' => $serieForm,
         ]);
     }
 
