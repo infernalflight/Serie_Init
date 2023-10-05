@@ -56,6 +56,29 @@ class SerieRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function getSeriesBySql(float $popularity): array
+    {
+        $rawSql = "SELECT * FROM serie s WHERE s.popularity > :popularity";
+        $conn = $this->getEntityManager()->getConnection();
+        return $conn->prepare($rawSql)->executeQuery(['popularity' => $popularity])->fetchAllAssociative();
+    }
+
+
+    public function getByDateOptionnel(string $date = null): array
+    {
+        // Fomat date = '2023-10-04'
+
+        $q = $this->createQueryBuilder('w');
+
+        if ($date) {
+            $q->andWhere('w.dateCreated = :date')
+                ->setParameter('date', $date);
+        }
+
+        return $q->orderBy('w.dateCreated', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
 
 //    /**
 //     * @return Serie[] Returns an array of Serie objects
