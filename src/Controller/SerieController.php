@@ -55,10 +55,8 @@ class SerieController extends AbstractController
     }
 
     #[Route('/details/{id}', requirements: ['id' => '\d+'], name: "_details")]
-    public function details(int $id, SerieRepository $serieRepository): Response
+    public function details(Serie $serie): Response
     {
-        $serie = $serieRepository->find($id);
-
         return $this->render('serie/details.html.twig', [
             'serie' => $serie
         ]);
@@ -73,8 +71,6 @@ class SerieController extends AbstractController
 
         if ($serieForm->isSubmitted() && $serieForm->isValid()) {
 
-            $serie->setDateCreated(new \DateTime());
-
             $entityManager->persist($serie);
             $entityManager->flush();
 
@@ -88,16 +84,12 @@ class SerieController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: '_edit', requirements: ['id' => '\d+'])]
-    public function edit(int $id, SerieRepository $serieRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, Serie $serie): Response
     {
-        $serie = $serieRepository->find($id);
-
         $serieForm = $this->createForm(SerieType::class, $serie);
         $serieForm->handleRequest($request);
 
         if ($serieForm->isSubmitted() && $serieForm->isValid()) {
-
-            $serie->setDateCreated(new \DateTime());
 
             $entityManager->persist($serie);
             $entityManager->flush();
@@ -106,10 +98,19 @@ class SerieController extends AbstractController
             return $this->redirectToRoute('serie_list');
         }
 
-
         return $this->render('serie/edit.html.twig', [
             'serie_form' => $serieForm,
         ]);
+    }
+
+    #[Route('/remove/{id}', name: '_remove', requirements: ['id' => '\d+'])]
+    public function remove(Serie $serie, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($serie);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La série a été supprimée');
+        return $this->redirectToRoute('serie_list');
     }
 
 
