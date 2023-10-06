@@ -82,9 +82,6 @@ class SerieController extends AbstractController
             return $this->redirectToRoute('serie_list');
         }
 
-
-
-
         return $this->render('serie/edit.html.twig', [
             'serie_form' => $serieForm,
         ]);
