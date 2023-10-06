@@ -20,7 +20,7 @@ class Serie
 
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank([], 'Ce champs ne peut pas etre vide')]
-    #[Assert\Assert\Length(min: 3, message: 'Le nom doit avoir auy moins {{ limit }} caractères')]
+    #[Assert\Length(min: 3, minMessage: 'Le nom doit avoir au moins {{ limit }} caractères')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
