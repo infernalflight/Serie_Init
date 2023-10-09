@@ -62,6 +62,8 @@ class Serie
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModified = null;
 
+    private string $posterPath = 'uploads/posters/series/';
+
     public function getId(): ?int
     {
         return $this->id;
@@ -268,5 +270,13 @@ class Serie
         $this->dateModified = new \DateTime();
 
         return $this;
+    }
+
+    #[ORM\PostRemove]
+    public function removePicture(): void
+    {
+        if ($this->poster && file_exists($this->posterPath . $this->poster)) {
+            unlink($this->posterPath . $this->poster);
+        }
     }
 }
