@@ -11,5 +11,5 @@
     <p><a type="button" class="btn btn-primary" href="{{ path('serie_edit', {'id' : serie.id}) }}">Modifier</a>
     &nbsp;
     <a type="button" class="btn btn-danger" href="{{ path('serie_remove', {'id' : serie.id }) }}" onclick="return confirm('Etes-vous sûr ?')">Supprimer</a></p>
-    <p><img src="{{ asset('uploads/posters/series/' ~ serie.poster) }}" /></p>
+    <p><img src="{{ asset(posters_path ~ serie.poster) }}" /></p>
 {% endblock %}

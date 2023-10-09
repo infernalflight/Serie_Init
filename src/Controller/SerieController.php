@@ -7,9 +7,11 @@ use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/serie', name: 'serie')]
 class SerieController extends AbstractController
@@ -63,13 +65,20 @@ class SerieController extends AbstractController
     }
 
     #[Route('/new', name: '_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $serie = new Serie();
         $serieForm = $this->createForm(SerieType::class, $serie);
         $serieForm->handleRequest($request);
 
         if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            if ($serieForm->get('poster_file')->getData() instanceof UploadedFile) {
+                $posterFile = $serieForm->get('poster_file')->getData();
+                $newFileName = $slugger->slug($serie->getName()) . '_' . uniqid() .'.'. $posterFile->guessExtension();
+                $posterFile->move($this->getParameter('posters_path'), $newFileName);
+                $serie->setPoster($newFileName);
+            }
 
             $entityManager->persist($serie);
             $entityManager->flush();
@@ -84,12 +93,24 @@ class SerieController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: '_edit', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager, Serie $serie): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, Serie $serie, SluggerInterface $slugger): Response
     {
         $serieForm = $this->createForm(SerieType::class, $serie);
         $serieForm->handleRequest($request);
 
         if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            if ($serieForm->get('poster_file')->getData() instanceof UploadedFile) {
+                $posterFile = $serieForm->get('poster_file')->getData();
+                $newFileName = $slugger->slug($serie->getName()) . '_' . uniqid() . '.'. $posterFile->guessExtension();
+                $posterFile->move($this->getParameter('posters_path'), $newFileName);
+
+                if ($serie->getPoster() && file_exists($this->getParameter('posters_path').$serie->getPoster())) {
+                    unlink($this->getParameter('posters_path').$serie->getPoster());
+                }
+
+                $serie->setPoster($newFileName);
+            }
 
             $entityManager->persist($serie);
             $entityManager->flush();

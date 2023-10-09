@@ -16,6 +16,6 @@
         </div>
     </section>
     {% for serie in series %}
-        <a href="{{ path('serie_details', {'id' : serie.id }) }}"><img src="{{ asset('uploads/posters/series/'~serie.poster) }}" width="150px" alt="{{ serie.name }}" title="{{ serie.name }}"/></a>
+        <a href="{{ path('serie_details', {'id' : serie.id }) }}"><img src="{{ asset(posters_path ~ serie.poster) }}" width="150px" alt="{{ serie.name }}" title="{{ serie.name }}"/></a>
     {% endfor %}
 {% endblock %}
