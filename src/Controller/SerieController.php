@@ -19,33 +19,35 @@ class SerieController extends AbstractController
     #[Route('/list/{page}', requirements: ['page' => '\d+'], defaults: ['page' => 1],  name: '_list')]
     public function list(SerieRepository $serieRepository, int $page = 1): Response
     {
-
-
         $limit = $this->getParameter('nb_limit_series');
 
         // Requetage par methode héritée "findBy"
+    /**
         $list = $serieRepository->findBy(
-            ['status' => 'ended'],
+            ['status' => 'returning'],
             ['firstAirDate' => 'DESC'],
             $limit,
             ($page - 1) * $limit
         );
+**/
+        $list = $serieRepository->findWithJoin(['status' => 'returning'], $limit, $page);
+
+
 
         // Requetage par QueryBuilder
-        $list = $serieRepository->findBestSeries(300, 8);
+        // $list = $serieRepository->findBestSeries(300, 8);
 
         // Requetage par DQL
-        $list = $serieRepository->getSeriesByDql(300);
+        // $list = $serieRepository->getSeriesByDql(300);
 
         // Requetage par SQL Raw
-        $list = $serieRepository->getSeriesBySql(300);
+        // $list = $serieRepository->getSeriesBySql(300);
 
 
-        $date = (new \DateTime("-10 day"))->format('Y-m-d');
-        $result = $serieRepository->getByDateOptionnel($date);
+        //$date = (new \DateTime("-10 day"))->format('Y-m-d');
+        //$result = $serieRepository->getByDateOptionnel($date);
 
-
-        $count = $serieRepository->count(['status' => 'ended']);
+        $count = $serieRepository->count(['status' => 'returning']);
 
         $nbPage = ceil($count / $limit);
 

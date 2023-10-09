@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -46,6 +47,26 @@ class SerieRepository extends ServiceEntityRepository
         return $q->getQuery()
             ->getResult();
     }
+
+    public function findWithJoin(array $criterias, int $limit, int $offset): Paginator
+    {
+        $q = $this->createQueryBuilder('s')
+            ->addSelect('seasons')
+            ->leftJoin('s.seasons', 'seasons')
+        ;
+
+        foreach($criterias as $criteria => $value) {
+            $q->andWhere('s.'.$criteria . ' = \'' . $value. '\'');
+        }
+
+        $query =  $q->orderBy('s.firstAirDate', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult(($offset - 1) * $limit)
+            ->getQuery();
+
+        return new Paginator($query, true);
+    }
+
 
     public function getSeriesByDql(float $popularity): array
     {
