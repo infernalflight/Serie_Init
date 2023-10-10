@@ -25,7 +25,8 @@ class SeasonType extends AbstractType
                 'query_builder' => function(SerieRepository $serieRepository) {
                     return $serieRepository->createQueryBuilder('s')
                         ->addOrderBy('s.name', 'ASC');
-                }
+                },
+                'placeholder' => 'Veuillez sélectionner la série'
             ])
             ->add('number', NumberType::class, [
                 'label' => 'Numéro de la Saison'
