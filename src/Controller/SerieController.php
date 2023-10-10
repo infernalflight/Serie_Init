@@ -11,12 +11,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/serie', name: 'serie')]
 class SerieController extends AbstractController
 {
     #[Route('/list/{page}', requirements: ['page' => '\d+'], defaults: ['page' => 1],  name: '_list')]
+    #[IsGranted('ROLE_USER')]
     public function list(SerieRepository $serieRepository, int $page = 1): Response
     {
         $limit = $this->getParameter('nb_limit_series');
@@ -59,6 +61,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/details/{id}', requirements: ['id' => '\d+'], name: "_details")]
+    #[IsGranted('ROLE_USER')]
     public function details(Serie $serie): Response
     {
         return $this->render('serie/details.html.twig', [
@@ -67,6 +70,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/new', name: '_new')]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $serie = new Serie();
@@ -95,6 +99,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: '_edit', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, EntityManagerInterface $entityManager, Serie $serie, SluggerInterface $slugger): Response
     {
         $serieForm = $this->createForm(SerieType::class, $serie);
@@ -127,8 +132,14 @@ class SerieController extends AbstractController
     }
 
     #[Route('/remove/{id}', name: '_remove', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function remove(Serie $serie, EntityManagerInterface $entityManager): Response
     {
+
+        foreach($serie->getSeasons() as $season) {
+            $season->setSerie(null);
+        }
+
         $entityManager->remove($serie);
         $entityManager->flush();
 

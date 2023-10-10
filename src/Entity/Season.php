@@ -34,7 +34,7 @@ class Season
     private ?int $tmdbId = null;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Serie $serie = null;
 
     #[ORM\Column]

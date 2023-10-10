@@ -4,13 +4,17 @@
 
 {% block body %}
     <h2>Détail de la série</h2>
-    <h3>{{ serie.name }}</h3>
+    <h3>{{ serie.name }}    {% for category in serie.categories %}
+            <span class="badge text-bg-primary rounded-pill">{{ category.name }}</span>
+        {% endfor %}</h3>
     <p>Status: {{ serie.status }}</p>
     <p>Description: {{ serie.overview }}</p>
     <p>Date de lancement: {{ serie.firstAirDate|date('d/m/Y') }}</p>
-    <p><a type="button" class="btn btn-primary" href="{{ path('serie_edit', {'id' : serie.id}) }}">Modifier</a>
-    &nbsp;
-    <a type="button" class="btn btn-danger" href="{{ path('serie_remove', {'id' : serie.id }) }}" onclick="return confirm('Etes-vous sûr ?')">Supprimer</a></p>
+    {% if is_granted('ROLE_ADMIN') %}
+        <p><a type="button" class="btn btn-primary" href="{{ path('serie_edit', {'id' : serie.id}) }}">Modifier</a>
+        &nbsp;
+        <a type="button" class="btn btn-danger" href="{{ path('serie_remove', {'id' : serie.id }) }}" onclick="return confirm('Etes-vous sûr ?')">Supprimer</a></p>
+    {% endif %}
     <p><img src="{{ asset(posters_path ~ serie.poster) }}" /></p>
     <ul>
     {% for season in serie.seasons %}

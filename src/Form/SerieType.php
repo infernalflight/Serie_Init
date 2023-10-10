@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Serie;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -67,6 +69,11 @@ class SerieType extends AbstractType
                         'maxSizeMessage' => 'Ce fichier est trop lourd. Max: 1Mo'
                     ])
                 ]
+            ])
+            ->add('categories', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'name',
+                'multiple' => true,
             ])
             ->add('tmdbId')
             ->add('submit', SubmitType::class)
