@@ -21,6 +21,14 @@ class SerieController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function list(SerieRepository $serieRepository, int $page = 1): Response
     {
+
+
+        if (\in_array('ROLE_USER', $this->getUser()->getRoles())) {
+            dd('user');
+        } else {
+            dd('user');
+        }
+
         $limit = $this->getParameter('nb_limit_series');
 
         // Requetage par methode héritée "findBy"
