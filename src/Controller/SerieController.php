@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Serie;
 use App\Form\SerieType;
+use App\Helper\Censurator;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -101,12 +102,14 @@ class SerieController extends AbstractController
 
     #[Route('/edit/{id}', name: '_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function edit(Request $request, EntityManagerInterface $entityManager, Serie $serie, SluggerInterface $slugger): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, Serie $serie, SluggerInterface $slugger, Censurator $censurator): Response
     {
         $serieForm = $this->createForm(SerieType::class, $serie);
         $serieForm->handleRequest($request);
 
         if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            $serie->setName($censurator->purify($serie->getName()));
 
             if ($serieForm->get('poster_file')->getData() instanceof UploadedFile) {
                 $posterFile = $serieForm->get('poster_file')->getData();
