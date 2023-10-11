@@ -26,6 +26,20 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     {
     }
 
+
+    /**
+     Ancienne façon de construire un objet
+    private $urlGenererator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenererator = $urlGenerator;
+    }
+
+     **/
+
+
+
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email', '');

@@ -22,7 +22,6 @@ class SerieController extends AbstractController
     public function list(SerieRepository $serieRepository, int $page = 1): Response
     {
 
-
         $limit = $this->getParameter('nb_limit_series');
 
         // Requetage par methode héritée "findBy"
