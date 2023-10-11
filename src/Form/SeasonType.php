@@ -31,15 +31,9 @@ class SeasonType extends AbstractType
             ->add('number', NumberType::class, [
                 'label' => 'Numéro de la Saison'
             ])
-            ->add('firstAirDate', DateType::class, [
-                'html5' => true,
-                'widget' => 'single_text'
-            ])
-            ->add('overview',TextType::class, [
-                'required' => false
-            ])
-            ->add('poster', TextType::class, [
-                'required' => false
+            ->add('included', IncludedType::class, [
+                'inherit_data' => true,
+                'label' => false
             ])
             ->add('tmdbId', NumberType::class, [
                 'required' => false

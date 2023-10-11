@@ -25,7 +25,10 @@ class SerieType extends AbstractType
                 'label' => 'Name',
                 'required' => false,
             ])
-            ->add('overview')
+            ->add('included', IncludedType::class, [
+                'inherit_data' => true,
+                'label' => false
+            ])
             ->add('status', ChoiceType::class, [
                 'label' => 'Status of the série',
                 'placeholder' => 'Choose a status',
@@ -40,11 +43,6 @@ class SerieType extends AbstractType
                 'required' => true,
             ])
             ->add('genres')
-            ->add('firstAirDate', DateType::class, [
-                'required' => true,
-                'html5' => true,
-                'widget' => 'single_text',
-            ])
             ->add('lastAirDate', DateType::class, [
                 'required' => false,
                 'html5' => true,
@@ -53,7 +51,6 @@ class SerieType extends AbstractType
             ->add('backdrop', TextType::class, [
 
             ])
-            ->add('poster', HiddenType::class)
             ->add('poster_file', FileType::class, [
                 'mapped' => false,
                 'required' => false,
