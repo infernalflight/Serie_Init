@@ -23,12 +23,6 @@ class SerieController extends AbstractController
     {
 
 
-        if (\in_array('ROLE_USER', $this->getUser()->getRoles())) {
-            dd('user');
-        } else {
-            dd('user');
-        }
-
         $limit = $this->getParameter('nb_limit_series');
 
         // Requetage par methode héritée "findBy"
