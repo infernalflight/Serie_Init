@@ -75,7 +75,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/new', name: '_new')]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_ADMIN', message: 'Interdiction aux gens étrangers au service')]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $serie = new Serie();
