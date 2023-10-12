@@ -8,6 +8,8 @@
             <span class="badge text-bg-primary rounded-pill">{{ category.name }}</span>
         {% endfor %}</h3>
     <p>Status: {{ serie.status }}</p>
+    <p>{{ serie.genres|displayToBadge }}</p>
+    <p>{{ displayToBadgeFunction(serie.genres, 'danger') }}</p>
     <p>Description: {{ serie.overview }}</p>
     <p>Date de lancement: {{ serie.firstAirDate|date('d/m/Y') }}</p>
     {% if is_granted('ROLE_ADMIN') %}
