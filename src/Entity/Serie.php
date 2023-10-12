@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\SerieRepository;
 use App\Validator\SerieValidator;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,28 +13,42 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[UniqueEntity('name', 'Ce nom existe déja')]
 #[Assert\Callback([SerieValidator::class, 'validate'])]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    operations:
+        [
+            new GetCollection(
+                paginationItemsPerPage: 10,
+                normalizationContext: ['groups' => "serie:list"]
+            )
+        ]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 class Serie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['serie:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank([], 'Ce champs ne peut pas etre vide')]
     #[Assert\Length(min: 3, minMessage: 'Le nom doit avoir au moins {{ limit }} caractères')]
+    #[Groups(['serie:list'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $overview = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['serie:list'])]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 1, nullable: true)]
@@ -69,6 +87,7 @@ class Serie
     private string $posterPath = 'uploads/posters/series/';
 
     #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class, orphanRemoval: true)]
+    #[Groups(['serie:list'])]
     private Collection $seasons;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'series')]
