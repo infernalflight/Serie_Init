@@ -63,9 +63,12 @@ class SerieController extends AbstractController
     }
 
     #[Route('/details/{id}', requirements: ['id' => '\d+'], name: "_details")]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('SERIE_VIEW', "serie", "Pas le droit d'entrer")]
     public function details(Serie $serie): Response
     {
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         return $this->render('serie/details.html.twig', [
             'serie' => $serie
         ]);
@@ -101,9 +104,10 @@ class SerieController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: '_edit', requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('SERIE_EDIT')]
     public function edit(Request $request, EntityManagerInterface $entityManager, Serie $serie, SluggerInterface $slugger, Censurator $censurator): Response
     {
+
         $serieForm = $this->createForm(SerieType::class, $serie);
         $serieForm->handleRequest($request);
 
