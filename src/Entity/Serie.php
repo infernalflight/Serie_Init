@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SerieRepository;
+use App\Validator\SerieValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -12,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[UniqueEntity('name', 'Ce nom existe déja')]
+#[Assert\Callback([SerieValidator::class, 'validate'])]
 #[ORM\HasLifecycleCallbacks]
 class Serie
 {
