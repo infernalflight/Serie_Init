@@ -66,7 +66,7 @@ class Serie
 
     private string $posterPath = 'uploads/posters/series/';
 
-    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class, orphanRemoval: false)]
+    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class, orphanRemoval: true)]
     private Collection $seasons;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'series')]
